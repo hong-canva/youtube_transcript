@@ -3,13 +3,6 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import re
 from youtube_transcript_api.proxies import WebshareProxyConfig
 
-ytt_api = YouTubeTranscriptApi(
-    proxy_config=WebshareProxyConfig(
-        proxy_username="mkpkjnqr",
-        proxy_password="ruvwloagq57u",
-    )
-)
-
 app = FastAPI()
 
 def extract_video_id(url: str):
@@ -23,6 +16,13 @@ def get_transcript(video_url: str = Query(...)):
         return {"error": "Invalid YouTube URL"}
 
     try:
+        ytt_api = YouTubeTranscriptApi(
+            proxy_config=WebshareProxyConfig(
+                proxy_username="mkpkjnqr",
+                proxy_password="ruvwloagq57u",
+            )
+        )
+        
         transcript = ytt_api.fetch(video_id)
         return {"video_id": video_id, "transcript": transcript}
     except Exception as e:
