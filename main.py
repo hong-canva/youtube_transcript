@@ -10,8 +10,6 @@ ytt_api = YouTubeTranscriptApi(
     )
 )
 
-ytt_api.fetch(video_id)
-
 app = FastAPI()
 
 def extract_video_id(url: str):
@@ -25,7 +23,7 @@ def get_transcript(video_url: str = Query(...)):
         return {"error": "Invalid YouTube URL"}
 
     try:
-        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        transcript = ytt_api.fetch(video_id)
         return {"video_id": video_id, "transcript": transcript}
     except Exception as e:
         return {"error": str(e)}
