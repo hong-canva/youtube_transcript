@@ -1,6 +1,16 @@
 from fastapi import FastAPI, Query
 from youtube_transcript_api import YouTubeTranscriptApi
 import re
+from youtube_transcript_api.proxies import WebshareProxyConfig
+
+ytt_api = YouTubeTranscriptApi(
+    proxy_config=WebshareProxyConfig(
+        proxy_username="mkpkjnqr",
+        proxy_password="ruvwloagq57u",
+    )
+)
+
+ytt_api.fetch(video_id)
 
 app = FastAPI()
 
