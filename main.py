@@ -1,14 +1,21 @@
-from typing import Optional
-
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
+from youtube_transcript_api import YouTubeTranscriptApi
+import re
 
 app = FastAPI()
 
+def extract_video_id(url: str):
+    match = re.search(r"(?:v=|youtu.be/)([a-zA-Z0-9_-]{11})", url)
+    return match.group(1) if match else None
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+@app.get("/get_transcript")
+def get_transcript(video_url: str = Query(...)):
+    video_id = extract_video_id(video_url)
+    if not video_id:
+        return {"error": "Invalid YouTube URL"}
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+    try:
+        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        return {"video_id": video_id, "transcript": transcript}
+    except Exception as e:
+        return {"error": str(e)}
